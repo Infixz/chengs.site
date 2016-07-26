@@ -1,0 +1,35 @@
+#container{
+    margin:0 auto; background-color: lightgrey; width: 1280px;
+}
+
+
+#header{
+    background-color: lightblue; text-align:center; width: 1280px;
+}
+
+
+#main{
+    
+}
+#content{
+     margin:0 auto; width: 1280px;
+}
+#record-field{
+    margin:0 auto; background-color: darkslategray; width: 1280px; border: 1px;
+}
+#record-item:hover{
+    margin:0 auto; background-color: aquamarine; width: 1280px;
+}
+#querybox{
+    margin:0 auto; text-align:center; background-color: cadetblue; width: 320px;
+}
+
+
+#footer{
+    margin:0 auto; text-align:center; background-color: lightblue; width: 1280px;
+}
+
+
+#index{
+    margin:0 auto; text-align:center; background-color: beige;width: 600px;
+}
