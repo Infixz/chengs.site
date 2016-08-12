@@ -22,22 +22,7 @@ App.config['SECRET_KEY'] = 'secret shit'
 db = SQLAlchemy(App)
 bootstrap = Bootstrap(App) # 插件
 
-class Role(db.Model):
-    __tablename__ = 'roles'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), unique=True)
-    users = db.relationship('User', backref='role')
-    def __repr__(self):
-        return '<Role %r>' % self.name
 
-
-class User(db.Model):
-    __tablename__ = 'users'
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), unique=True, index=True)
-    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
-    def __repr__(self):
-        return '<User %r>' % self.username
 
 @App.route('/')
 def index():
@@ -52,10 +37,11 @@ def user(name=None):
 @App.errorhandler(404)
 def page_not_found(e):
     return render_template('404.html'), 404
+
 @App.errorhandler(500)
 def internal_server_error(e):
     return render_template('500.html'), 500
 
 
 if __name__ == '__main__':
-    App.run(debug=True)
+    App.run(debug=True, host='0.0.0.0')
