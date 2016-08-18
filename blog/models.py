@@ -1,4 +1,5 @@
 # coding: utf-8
+
 from app import db
 
 class Role(db.Model):
@@ -17,3 +18,7 @@ class User(db.Model):
     role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
     def __repr__(self):
         return '<User %r>' % self.username
+
+
+class Permission(object):
+    pass
