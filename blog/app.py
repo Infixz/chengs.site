@@ -18,12 +18,13 @@ from wtforms.validators import Required
 #from models import Role, User
 from local_settings import MySQL_URI, SECRET_KEY
 
-
 app = Flask(__name__)
-manager = Manager(app)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = MySQL_URI
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SECRET_KEY'] = SECRET_KEY
+
+manager = Manager(app)
 
 db = SQLAlchemy(app)
 bootstrap = Bootstrap(app) # 插件
