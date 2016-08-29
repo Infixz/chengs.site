@@ -4,16 +4,14 @@
 Hi, {{ name }}
 {% endblock %}
 
-{% block content %}
-<div class="container">
-    <div class="page-header">
-        <h1>Hello, {{ name }}!</h1>
-    </div>
-
-    <div class="page-content">
-        <p>Profile Down below</p>
-    </div>
-
+{% block page_header %}
+<div class="page-header">
+    <h1>Hello, {{ name }}!</h1>
 </div>
+{% endblock %}
 
+{% block page_content %}
+<div class="page-content">
+    <p>Profile Down below</p>
+</div>
 {% endblock %}

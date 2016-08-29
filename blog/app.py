@@ -25,9 +25,8 @@ app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SECRET_KEY'] = SECRET_KEY
 
 manager = Manager(app)
-
 db = SQLAlchemy(app)
-bootstrap = Bootstrap(app) # 插件
+bootstrap = Bootstrap(app)
 
 class NameForm(Form):
     name = StringField('What is your name?', validators=[Required()])
@@ -50,7 +49,7 @@ def user_index():
     return render_template('user_index.html',name=name,form=form)
 
 @app.route('/user/<name>')
-def user_detail(name=None):
+def user_profile(name='visitor'):
     return render_template('user.html', name=name)
     
 

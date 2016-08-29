@@ -3,12 +3,12 @@ import os.path
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 from flask import Flask
-from flask import request, session, make_response, redirect, abort, url_for, flash
 from flask import render_template
+from flask import request, session, make_response, redirect, abort, url_for, flash
 
-from flask_bootstrap import Bootstrap
-from flask_moment import Moment
-from flask_sqlalchemy import SQLAlchemy
+from flask.ext.bootstrap import Bootstrap
+from flask.ext.moment import Moment
+from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.wtf import Form
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required
@@ -27,7 +27,7 @@ def user_index():
     if form.validate_on_submit():
         name = form.name.data
         form.name.data = ''
-        return redirect(url_for('user_detail'))
+        return redirect(url_for('user_detail',name=name))
     return render_template('user_index.html',name=name,form=form)
 
 @app.route('/user/<name>')
