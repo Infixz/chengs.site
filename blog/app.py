@@ -3,7 +3,6 @@
 app defined here
 """
 
-
 from flask import Flask
 from flask import request, session, make_response, redirect, abort, url_for, flash
 from flask import render_template
@@ -28,9 +27,28 @@ manager = Manager(app)
 db = SQLAlchemy(app)
 bootstrap = Bootstrap(app)
 
+class Role(db.Model):
+    __tablename__ = 'roles'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(64), unique=True)
+    users = db.relationship('User', backref='role')
+    def __repr__(self):
+        return '<Role %r>' % self.name
+
+
+class User(db.Model):
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(64), unique=True, index=True)
+    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
+    def __repr__(self):
+        return '<User %r>' % self.username
+
+
 class NameForm(Form):
     name = StringField('What is your name?', validators=[Required()])
     submit = SubmitField('Submit')
+
 
 @app.route('/')
 def index():
@@ -38,20 +56,21 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/user/', methods=['GET','POST'])
+@app.route('/user/', methods=['GET', 'POST'])
+@app.route('/user/<name>')
 def user_index():
     name = None
     form = NameForm()
     if form.validate_on_submit():
-        name = form.name.data
+        session['name'] = form.name.data
         form.name.data = ''
-        return redirect(url_for('user_detail'))
-    return render_template('user_index.html',name=name,form=form)
+        return redirect(url_for('user_index'))
+    return render_template('user_index.html', name=session.get('name', 'Not in session'), form=form)
 
-@app.route('/user/<name>')
-def user_profile(name='visitor'):
-    return render_template('user.html', name=name)
-    
+#@app.route('/user/<name>')
+# def user_profile(name='visitor'):
+# return render_template('user.html', name=session.get('name','Not in
+# session'))
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -63,7 +82,7 @@ def internal_server_error(e):
 
 
 if __name__ == '__main__':
-    #def make_shell_context():
+    # def make_shell_context():
     #    return dict(app=app,db=db,User=User,Role=Role)
-    #manager.add_command("shell",Shell(make_context=make_shell_context))
+    # manager.add_command("shell",Shell(make_context=make_shell_context))
     manager.run()
