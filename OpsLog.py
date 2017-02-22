@@ -56,3 +56,21 @@ report = OpsStat(db_config)
 start_date = "2016-09-01"
 end_date = "2016-09-04"
 resp = report.get_fixed_reports(start_date, end_date)
+
+
+def ops_record(module_name='camel'):
+    """closure return a deco"""
+    def deco(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            resp = func(*args, **kwargs)
+            if request.environ['REQUEST_METHOD'] == 'GET':
+                return resp
+            print ':module_name:', module_name  # modify ops_record
+            print ':func.__name__:', func.__name__
+            print ':requ_env:', request.environ
+            print ':requ.values:', request.values
+            print ':form2dict:', request.form.to_dict()
+            return resp
+        return wrapper
+    return deco
