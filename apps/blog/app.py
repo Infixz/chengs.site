@@ -4,7 +4,7 @@ app defined here
 """
 from __future__ import absolute_import
 from functools import wraps
-
+import time
 from flask import Flask
 from flask import request, session
 from flask import render_template, make_response, \
@@ -21,6 +21,8 @@ from wtforms.validators import Required
 
 from local_settings import MySQL_URI, SECRET_KEY,\
         MAIL_SERVER, MAIL_PORT, MAIL_USE_SSL, MAIL_USERNAME, MAIL_PASSWORD
+from celery_tasks import reg_notice
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -134,14 +136,11 @@ class UserAPI(MethodView):
             except Exception, e:
                 db.session.rollback()
                 return jsonify({'err_msg': str(e)}), 400
-            msg = Message(
-                    'Add user',
-                    sender='infixz@foxmail.com',
-                    recipients=['sorrible@126.com'])
-            msg.html = '<h3>Username: %s, role: %s</h3>' % (username, role_name)
-            with app.app_context():
-                mail.send(msg)
-            return jsonify({'status': 'create sucessful'}), 201
+            html_content = '<h3>Username: %s, role: %s</h3>' % (username, role_name)
+            t1 = time.time()
+            async_r = reg_notice.delay(html_content.encode('utf8'))
+            print time.time() - t1
+            return jsonify({'status': 'create sucessful', 'async_r': str(async_r)}), 201
         else:
             return jsonify({'status': 'check your args'}), 400
 
@@ -185,7 +184,3 @@ manager.add_command("shell", Shell(make_context=make_shell_context))
 
 if __name__ == '__main__':
     manager.run()
-    """app.run(
-        debug=True,
-        host="0.0.0.0",
-        port=8080)"""
