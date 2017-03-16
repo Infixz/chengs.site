@@ -93,3 +93,4 @@ ENV/
 
 # vim .swp
 *.swp
+*.swo
