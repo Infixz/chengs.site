@@ -8,13 +8,22 @@ class Config(object):
     SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     # blog content config
-    FLASKY_POSTS_PER_PAGE = 20
-    FLASKY_FOLLOWERS_PER_PAGE = 50
-    FLASKY_COMMENTS_PER_PAGE = 30
+    POSTS_PER_PAGE = 20
+    FOLLOWERS_PER_PAGE = 50
+    COMMENTS_PER_PAGE = 30
+    # reg-notice-receiver email
+    ADMIN_EMAIL = 'ws@t.com'
+    # mail conf
+    MAIL_SERVER = 'smtp.mailgun.org'
+    MAIL_PORT = 465
+    MAIL_USE_TLS = False
+    MAIL_USE_SSL = True
+    MAIL_USERNAME = 'postmaster@sandbox.mailgun.org'
+    MAIL_PASSWORD = ''
 
     @staticmethod
     def init_app(app):
-        print 'conf have been set'
+        print 'Config.init_app(app) called'
         pass
 
 
@@ -22,39 +31,49 @@ class DevConfig(Config):
     # dev status
     DEBUG = True
     # secret key
-    SECRET_KEY = '1024'
-    # mail conf
-    MAIL_SERVER = 'smtp.qq.com'
-    MAIL_PORT = 465
-    MAIL_USE_TLS = False
-    MAIL_USE_SSL = True
-    MAIL_USERNAME = 'name@server.com'
-    MAIL_PASSWORD = 'passwd'
+    SECRET_KEY = 'key'
     # celery conf
-    BROKER_URL = 'amqp://usrname:passwd@localhost:5672/chengs_site_dev'
-    CELERY_RESULT_BACKEND = 'redis://localhost:6379/x'
+    BROKER_URL = 'amqp://u:p@localhost:5672/vhost'
+    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
     CELERY_TASK_SERIALIZER = 'json'
     CELERY_RESULT_SERIALIZER = 'json'
     CELERY_TASK_RESULT_EXPIRES = 60*60*24
     CELERY_ACCEPT_CONTENT = ['json']
     # db uri
-    MySQL_URI = 'mysql://usr:passwd@localhost:3306/db_name?charset=utf8'
+    SQLALCHEMY_DATABASE_URI = 'mysql://u:p@localhost:3306/db?charset=utf8'
 
 
 class TestingConfig(Config):
     # testing status
     TESTING = True
-    pass
+    # celery conf
+    BROKER_URL = 'amqp://chengs:warsong@localhost:5672/vhost'
+    CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
+    CELERY_TASK_SERIALIZER = 'json'
+    CELERY_RESULT_SERIALIZER = 'json'
+    CELERY_TASK_RESULT_EXPIRES = 60*60*24
+    CELERY_ACCEPT_CONTENT = ['json']
+    # db uri
+    SQLALCHEMY_DATABASE_URI = 'mysql://u:p@localhost:3306/db?charset=utf8'
 
 
 class ProductionConfig(Config):
-    pass
+
+    # celery conf
+    BROKER_URL = 'amqp://u:p@localhost:5672/vhost'
+    CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+    CELERY_TASK_SERIALIZER = 'json'
+    CELERY_RESULT_SERIALIZER = 'json'
+    CELERY_TASK_RESULT_EXPIRES = 60*60*24
+    CELERY_ACCEPT_CONTENT = ['json']
+    # db uri
+    SQLALCHEMY_DATABASE_URI = 'mysql://u:p@localhost:3306/db?charset=utf8'
 
 
 config = {
-    'dev': DevConfig,
-    'testing': TestingConfig,
-    'production': ProductionConfig,
+    'DevConfig': DevConfig,
+    'TestingConfig': TestingConfig,
+    'ProductionConfig': ProductionConfig,
 }
 
-current_env = config[os.getenv('CHENGSITE_ENV') or 'dev']
+current_env = config[os.getenv('CHENGSITE_ENV') or 'DevConfig']

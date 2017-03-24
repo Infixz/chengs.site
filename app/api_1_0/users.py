@@ -6,7 +6,8 @@ from flask import request, url_for, current_app, jsonify
 from flask.views import MethodView
 from .. import db
 from ..models import Role, User
-from ..celery import reg_notice_admin
+from ..celery import send_email
+from ..local_settings import current_env as env
 from . import api
 
 
@@ -48,7 +49,7 @@ class UserAPI(MethodView):
             html_content = '<h3>Username: %s, role: %s</h3>' % \
                 (username, role_name)
             t1 = time.time()
-            async_r = reg_notice_admin.delay(html_content.encode('utf8'))
+            async_r = send_email.delay(env.ADMIN_EMAIL, 'reg_notify', html_content.encode('utf8'))
             print time.time() - t1
             return jsonify({
                 'status': 'create sucessful',
