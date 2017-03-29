@@ -1,3 +1,5 @@
+# coding: utf-8
+
 from datetime import datetime
 import hashlib
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -86,6 +88,18 @@ class User(UserMixin, db.Model):
                                 cascade='all, delete-orphan')
     comments = db.relationship('Comment', backref='author', lazy='dynamic')
 
+    def __init__(self, **kwargs):
+        super(User, self).__init__(**kwargs)
+        if self.role is None:
+            if self.email == current_app.config['ADMIN_EMAIL']:
+                self.role = Role.query.filter_by(permissions=0xff).first()
+            if self.role is None:
+                self.role = Role.query.filter_by(default=True).first()
+        if self.email is not None and self.avatar_hash is None:
+            self.avatar_hash = hashlib.md5(
+                self.email.encode('utf-8')).hexdigest()
+        self.followed.append(Follow(followed=self))
+
     @staticmethod
     def generate_fake(count=100):
         from sqlalchemy.exc import IntegrityError
@@ -116,18 +130,6 @@ class User(UserMixin, db.Model):
                 db.session.add(user)
                 db.session.commit()
 
-    def __init__(self, **kwargs):
-        super(User, self).__init__(**kwargs)
-        if self.role is None:
-            if self.email == current_app.config['ADMIN_EMAIL']:
-                self.role = Role.query.filter_by(permissions=0xff).first()
-            if self.role is None:
-                self.role = Role.query.filter_by(default=True).first()
-        if self.email is not None and self.avatar_hash is None:
-            self.avatar_hash = hashlib.md5(
-                self.email.encode('utf-8')).hexdigest()
-        self.followed.append(Follow(followed=self))
-
     @property
     def password(self):
         raise AttributeError('password is not a readable attribute')
@@ -139,7 +141,7 @@ class User(UserMixin, db.Model):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    def generate_confirmation_token(self, expiration=3600):
+    def generate_confirmation_token(self, expiration=15*60):
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
         return s.dumps({'confirm': self.id})
 
@@ -153,9 +155,10 @@ class User(UserMixin, db.Model):
             return False
         self.confirmed = True
         db.session.add(self)
+        db.session.commit()
         return True
 
-    def generate_reset_token(self, expiration=3600):
+    def generate_reset_token(self, expiration=15*50):
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
         return s.dumps({'reset': self.id})
 
@@ -171,7 +174,7 @@ class User(UserMixin, db.Model):
         db.session.add(self)
         return True
 
-    def generate_email_change_token(self, new_email, expiration=3600):
+    def generate_email_change_token(self, new_email, expiration=15*60):
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
         return s.dumps({'change_email': self.id, 'new_email': new_email})
 
@@ -192,6 +195,7 @@ class User(UserMixin, db.Model):
         self.avatar_hash = hashlib.md5(
             self.email.encode('utf-8')).hexdigest()
         db.session.add(self)
+        db.session.commit()
         return True
 
     def can(self, permissions):

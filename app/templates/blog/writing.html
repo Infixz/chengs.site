@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Writing | Chengs.site{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    {% if current_user.can(Permission.WRITE_ARTICLES) %}
+    <h1>markdown编辑器</h1>
+    {{ wtf.quick_form(form) }}
+    {% else %}
+    <h1>无权限发表博文</h1>
+    <p>请联系infixz@infixz.com申请发表博文权限</p>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+{{ pagedown.include_pagedown() }}
+{% endblock %}

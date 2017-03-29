@@ -59,9 +59,9 @@ def register():
         db.session.commit()
         token = user.generate_confirmation_token()
         rendered_content = render_template(
-                'auth/email/register.html', user=user, token=token)
+                'auth/email/confirm.html', user=user, token=token)
         send_email.delay(user.email, u'确认注册'.encode('utf-8'), rendered_content)
-        flash(u'确认注册邮件已经发送到你的注册邮箱')
+        flash(u'确认注册邮件已经发送到你的注册邮箱，请在１５分钟内确认注册')
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form)
 
@@ -106,6 +106,7 @@ def change_password():
 
 @auth.route('/reset', methods=['GET', 'POST'])
 def password_reset_request():
+    # 不用@login_required是因为忘记密码的用户
     if not current_user.is_anonymous:
         return redirect(url_for('main.index'))
     form = PasswordResetRequestForm()
@@ -117,7 +118,8 @@ def password_reset_request():
                         'auth/email/reset_password.html',
                         user=current_user, token=token,
                         next=request.args.get('next'))
-            send_email.delay(user.email, u'重置密码'.encode('utf-8'), rendered_content)
+            send_email.delay(
+                    user.email, u'重置密码'.encode('utf-8'), rendered_content)
         flash(u'重置密码的链接已经发送到你的邮箱')
         return redirect(url_for('auth.login'))
     return render_template('auth/reset_password.html', form=form)
@@ -151,8 +153,8 @@ def change_email_request():
             rendered_content = render_template(
                         'auth/email/change_email.html',
                         user=current_user, token=token)
-            send_email.delay(new_email, u'更换邮箱确认'.encode('utf-8'),
-                            rendered_content)
+            send_email.delay(
+                    new_email, u'更换邮箱确认'.encode('utf-8'), rendered_content)
             flash(u'确认新邮箱地址的链接已经发送到你的邮箱')
             return redirect(url_for('main.index'))
         else:
