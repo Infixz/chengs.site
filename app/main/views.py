@@ -14,20 +14,8 @@ from ..utils.decorators import admin_required, permission_required
 
 @main.route('/', methods=['GET'])
 def index():
-    page = request.args.get('page', 1, type=int)
-    show_followed = False
-    if current_user.is_authenticated:
-        show_followed = bool(request.cookies.get('show_followed', ''))
-    if show_followed:
-        query = current_user.followed_posts
-    else:
-        query = Post.query
-    pagination = query.order_by(Post.timestamp.desc()).paginate(
-        page, per_page=current_app.config['POSTS_PER_PAGE'],
-        error_out=False)
-    posts = pagination.items
-    return render_template('index.html', posts=posts,
-                           show_followed=show_followed, pagination=pagination)
+    posts = None
+    return render_template('index.html', posts=posts)
 
 
 @main.route('/user/<username>')

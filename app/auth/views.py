@@ -61,7 +61,7 @@ def register():
         rendered_content = render_template(
                 'auth/email/confirm.html', user=user, token=token)
         send_email.delay(user.email, u'确认注册'.encode('utf-8'), rendered_content)
-        flash(u'确认注册邮件已经发送到你的注册邮箱，请在１５分钟内确认注册')
+        flash(u'确认注册邮件已经发送到你的注册邮箱，请在15分钟内确认注册')
         return redirect(url_for('auth.login'))
     return render_template('auth/register.html', form=form)
 
@@ -84,7 +84,8 @@ def resend_confirmation():
     token = current_user.generate_confirmation_token()
     rendered_content = render_template(
                 'auth/email/confirm.html', user=current_user, token=token)
-    send_email.delay(current_user.email, u'确认注册'.encode('utf-8'), rendered_content)
+    send_email.delay(
+            current_user.email, u'确认注册'.encode('utf-8'), rendered_content)
     flash(u'新的确认注册链接已经发送到你的邮箱')
     return redirect(url_for('main.index'))
 
