@@ -14,8 +14,7 @@ from ..utils.decorators import admin_required, permission_required
 
 @main.route('/', methods=['GET'])
 def index():
-    posts = None
-    return render_template('index.html', posts=posts)
+    return render_template('index.html')
 
 
 @main.route('/user/<username>')
