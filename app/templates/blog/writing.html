@@ -8,6 +8,7 @@
     {% if current_user.can(Permission.WRITE_ARTICLES) %}
     <h1>markdown编辑器</h1>
     {{ wtf.quick_form(form) }}
+    <div style="clear:both"></div>
     {% else %}
     <h1>无权限发表博文</h1>
     <p>请联系infixz@infixz.com申请发表博文权限</p>

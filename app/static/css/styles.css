@@ -79,8 +79,16 @@ div.pagination {
     padding: 0px;
     margin: 0px;
 }
+textarea#flask-pagedown-body.form-control {
+    float: left;
+    width: 48%;
+    height: 700px;
+}
 div.flask-pagedown-preview {
-    margin: 10px 0px 10px 0px;
+    float: left;
+    width: 48%;
+    height: 700px;
+    margin: 0px 10px 0px 10px;
     border: 1px solid #e0e0e0;
     padding: 4px;
 }
