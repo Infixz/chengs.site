@@ -52,5 +52,6 @@ def writing():
         post = Post(body=form.body.data,
                     author=current_user._get_current_object())
         db.session.add(post)
-        return redirect(url_for('main.index'))
+        flash(u'已完成发帖')
+        return redirect(url_for('blog.index'))
     return render_template('blog/writing.html', form=form)
