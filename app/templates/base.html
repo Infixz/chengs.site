@@ -24,9 +24,6 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="{{ url_for('blog.index') }}">Blog</a></li>
-                {% if current_user.is_authenticated %}
-                <li><a href="{{ url_for('main.user', username=current_user.username) }}">Profile</a></li>
-                {% endif %}
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.can(Permission.MODERATE_COMMENTS) %}
@@ -39,6 +36,7 @@
                         Account <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
+                        <li><a href="{{ url_for('main.user', username=current_user.username) }}">个人信息</a></li>
                         <li><a href="{{ url_for('auth.change_password') }}">更换密码</a></li>
                         <li><a href="{{ url_for('auth.change_email_request') }}">更换注册邮箱</a></li>
                         <li><a href="{{ url_for('auth.logout') }}">退出</a></li>
@@ -70,4 +68,11 @@
 {% block scripts %}
 {{ super() }}
 {{ moment.include_moment() }}
+{% endblock %}
+
+{% block style %}
+{{ super() }}
+<style type="text/css">
+body {background-color: OldLace}
+</style>
 {% endblock %}
