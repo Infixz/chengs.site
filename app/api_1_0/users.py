@@ -2,7 +2,7 @@
 
 from __future__ import absolute_import
 import time
-from flask import request, url_for, current_app, jsonify
+from flask import request, jsonify
 from flask.views import MethodView
 from .. import db
 from ..models import Role, User
@@ -29,8 +29,7 @@ class UserAPI(MethodView):
         # query users dir
         else:
             return jsonify({
-                'user_list': [
-                    {'user_id': item.id, 'name': item.username} for item in User.query.all()],
+                'user_list': [{'user_id': item.id, 'name': item.username} for item in User.query.all()],
                 'user_count': User.query.count()
                 })
 
@@ -49,7 +48,8 @@ class UserAPI(MethodView):
             html_content = '<h3>Username: %s, role: %s</h3>' % \
                 (username, role_name)
             t1 = time.time()
-            async_r = send_email.delay(env.ADMIN_EMAIL, 'reg_notify', html_content.encode('utf8'))
+            async_r = send_email.delay(
+                    env.ADMIN_EMAIL, 'reg_notify', html_content.encode('utf8'))
             print time.time() - t1
             return jsonify({
                 'status': 'create sucessful',
@@ -65,16 +65,20 @@ class UserAPI(MethodView):
 
 
 user_view = UserAPI.as_view('user_api')
+
 api.add_url_rule(
         rule='/users/',
         defaults={'user_name': None},
         view_func=user_view,
-        methods=['GET', ])
+        methods=['GET', ]
+        )
 api.add_url_rule(
         rule='/users/',
         view_func=user_view,
-        methods=['POST', ])
+        methods=['POST', ]
+        )
 api.add_url_rule(
         rule='/users/<user_name>',
         view_func=user_view,
-        methods=['GET', 'PUT', 'DELETE'])
+        methods=['GET', 'PUT', 'DELETE']
+        )
