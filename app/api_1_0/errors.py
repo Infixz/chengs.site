@@ -1,3 +1,5 @@
+# coding: utf-8
+
 from flask import jsonify
 from utils.exceptions import ValidationError
 from . import api

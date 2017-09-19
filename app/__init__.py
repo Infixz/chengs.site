@@ -7,6 +7,7 @@ from flask_moment import Moment
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_pagedown import PageDown
+
 from .local_settings import config
 
 bootstrap = Bootstrap()
@@ -38,6 +39,9 @@ def create_app(env_name):
 
     from .blog import blog as blog_blueprint
     app.register_blueprint(blog_blueprint, url_prefix='/blog')
+
+    from .todo_list import todo_list as todo_list_blueprint
+    app.register_blueprint(todo_list_blueprint, url_prefix='/todo_list')
 
     from .admin import admin as auth_blueprint
     app.register_blueprint(auth_blueprint, url_prefix='/admin')
