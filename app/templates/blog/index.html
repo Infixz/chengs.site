@@ -9,12 +9,6 @@
     <h1>一些文字</h1>
 </div>
 <div class="post-tabs">
-    <ul class="nav nav-tabs">
-        <li{% if not show_followed %} class="active"{% endif %}><a href="{{ url_for('blog.show_all') }}">所有</a></li>
-        {% if current_user.is_authenticated %}
-        <li{% if show_followed %} class="active"{% endif %}><a href="{{ url_for('blog.show_followed') }}">正关注</a></li>
-        {% endif %}
-    </ul>
     {% include '_posts.html' %}
 </div>
 {% if pagination %}

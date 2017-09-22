@@ -15,7 +15,7 @@ db = SQLAlchemy()
 pagedown = PageDown()
 
 login_manager = LoginManager()
-login_manager.session_protection = 'strong'
+login_manager.session_protection = 'basic'
 login_manager.login_view = 'auth.login'
 
 
@@ -39,8 +39,17 @@ def create_app(env_name):
     from .blog import blog as blog_blueprint
     app.register_blueprint(blog_blueprint, url_prefix='/blog')
 
-    from .admin import admin as auth_blueprint
-    app.register_blueprint(auth_blueprint, url_prefix='/admin')
+    from .topic import topic as topic_blueprint
+    app.register_blueprint(topic_blueprint, url_prefix='/topic')
+
+    from .chatting import chatting as chatting_blueprint
+    app.register_blueprint(chatting_blueprint, url_prefix='/chatting')
+
+    from .todo_list import todo_list as todo_list_blueprint
+    app.register_blueprint(todo_list_blueprint, url_prefix='/todo_list')
+
+    """from .admin import admin as auth_blueprint
+    app.register_blueprint(auth_blueprint, url_prefix='/admin')"""
 
     from .api_1_0 import api as api_1_0_blueprint
     app.register_blueprint(api_1_0_blueprint, url_prefix='/api/v1.0')

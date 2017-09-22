@@ -24,6 +24,11 @@
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 <li><a href="{{ url_for('blog.index') }}">Blog</a></li>
+                <li><a href="{{ url_for('topic.index') }}">Topic</a></li>
+                <li><a href="{{ url_for('chatting.index') }}">Chatting</a></li>
+                {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('todo_list.index') }}">Todo</a></li>
+                {% endif %}
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 {% if current_user.can(Permission.MODERATE_COMMENTS) %}

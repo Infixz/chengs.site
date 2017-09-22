@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ super() }}
+<meta charset="utf-8">
+<link rel="stylesheet" href="/static/css/todos.css"/>
+{% endblock %}
+
+{% block title %}TODO list | Chengs.site{% endblock %}
+
+{% block page_content %}
+<!-- <div class="page-header">
+    <h1>TODO: to do!</h1>
+</div> -->
+<div id="todo-app">
+    <header>
+        <h1>Todos</h1>
+        <input id="new-todo" type="text" placeholder="填写待办事项...">
+    </header>
+
+    <section id="main">
+        <input id="toggle-all" type="checkbox">
+        <label for="toggle-all">标记为已完成</label>
+        <ul id="todo-list"></ul>
+    </section>
+
+    <footer>
+        <a id="clear-completed">清除已完成事项</a>
+        <div id="todo-count"></div>
+    </footer>
+</div>
+
+<div id="instructions">
+    双击修改Todo
+</div>
+
+<!-- Templates -->
+
+<script type="text/template" id="item-template">
+    <div class="view">
+        <input class="toggle" type="checkbox" <%= done ? 'checked="checked"' : '' %> />
+        <label><%- title %></label>
+        <a class="destroy"></a>
+    </div>
+    <input class="edit" type="text" value="<%- title %>" />
+</script>
+
+<script type="text/template" id="stats-template">
+    <% if (done) { %>
+        <a id="clear-completed">Clear <%= done %> completed <%= done == 1 ? 'item' : 'items' %></a>
+    <% } %>
+    <div class="todo-count"><b><%= remaining %></b> <%= remaining == 1 ? 'item' : 'items' %> left</div>
+</script>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="/static/js/json2.js"></script>
+<script src="http://the5fireblog.b0.upaiyun.com/staticfile/jquery-1.10.2.js"></script>
+<script src="http://the5fireblog.b0.upaiyun.com/staticfile/underscore.js"></script>
+<script src="http://the5fireblog.b0.upaiyun.com/staticfile/backbone.js"></script>
+<script src="/static/js/todo.js"></script>
+{% endblock %}

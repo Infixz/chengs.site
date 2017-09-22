@@ -9,7 +9,7 @@ from .. import db
 from ..models import Permission, Post
 
 
-@blog.route('/')
+@blog.route('/index')
 def index():
     page = request.args.get('page', 1, type=int)
     show_followed = False

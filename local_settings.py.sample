@@ -47,7 +47,7 @@ class TestingConfig(Config):
     # testing status
     TESTING = True
     # celery conf
-    BROKER_URL = 'amqp://chengs:warsong@localhost:5672/vhost'
+    BROKER_URL = 'amqp://u:p@localhost:5672/vhost'
     CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
     CELERY_TASK_SERIALIZER = 'json'
     CELERY_RESULT_SERIALIZER = 'json'

@@ -9,12 +9,15 @@ import bleach
 from flask import current_app, request
 from flask_login import UserMixin, AnonymousUserMixin
 from . import db, login_manager
+from utils.exceptions import ValidationError
 
 
 class Permission:
     FOLLOW = 0x01
     COMMENT = 0x02
     WRITE_ARTICLES = 0x04
+    WRITE_TOPICS = 0x10
+    WRITE_TODOS = 0x20
     MODERATE_COMMENTS = 0x08
     ADMINISTER = 0x80
 
@@ -28,14 +31,15 @@ class Role(db.Model):
     users = db.relationship('User', backref='role', lazy='dynamic')
 
     @staticmethod
-    def insert_roles():
+    def insert_roles():  # ops through flask_script shell manully
         roles = {
             'User': (Permission.FOLLOW |
                      Permission.COMMENT |
-                     Permission.WRITE_ARTICLES, True),
+                     Permission.WRITE_TOPICS |
+                     Permission.WRITE_TODOS, True),
             'Moderator': (Permission.FOLLOW |
                           Permission.COMMENT |
-                          Permission.WRITE_ARTICLES |
+                          Permission.WRITE_TOPICS |
                           Permission.MODERATE_COMMENTS, False),
             'Administrator': (0xff, False)
         }
@@ -76,6 +80,7 @@ class User(UserMixin, db.Model):
     last_seen = db.Column(db.DateTime(), default=datetime.utcnow)
     avatar_hash = db.Column(db.String(32))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+    todos = db.relationship('Todo', backref='author', lazy='select')
     followed = db.relationship('Follow',
                                foreign_keys=[Follow.follower_id],
                                backref=db.backref('follower', lazy='joined'),
@@ -253,10 +258,11 @@ class AnonymousUser(AnonymousUserMixin):
     def is_administrator(self):
         return False
 
+
 login_manager.anonymous_user = AnonymousUser
 
 
-@login_manager.user_loader
+@login_manager.user_loader  # bind User_instance to flask_login.current_user
 def load_user(user_id):
     return User.query.get(int(user_id))
 
@@ -289,12 +295,38 @@ class Post(db.Model):
     def on_changed_body(target, value, oldvalue, initiator):
         allowed_tags = ['a', 'abbr', 'acronym', 'b', 'blockquote', 'code',
                         'em', 'i', 'li', 'ol', 'pre', 'strong', 'ul',
-                        'h1', 'h2', 'h3', 'p']
+                        'h1', 'h2', 'h3', 'p', 'img']
         target.body_html = bleach.linkify(bleach.clean(
             markdown(value, output_format='html'),
             tags=allowed_tags, strip=True))
 
+    def to_json(self):
+        return {
+            "url": "url_for('api.get_post', id=self.id, _external=True)",
+            "body": self.body,
+            "timestamp": self.timestamp,
+            "author": "url_for('api.get_user', id=self.user_id), _ext"
+        }
+
+    @staticmethod
+    def from_json(post_json):
+        _body = post_json.get('body')
+        if _body is None or _body == "":
+            raise ValidationError(u'博文为空')
+        return Post(body=_body)
+
+
 db.event.listen(Post.body, 'set', Post.on_changed_body)
+
+
+class Todo(db.Model):
+    __tablename__ = 'todos'
+    id = db.Column(db.Integer, primary_key=True)
+    task = db.Column(db.String(160), nullable=False)
+    order = db.Column(db.Interger, nullable=False)
+    done = db.Column(db.Boolean, default)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
 
 class Comment(db.Model):
@@ -314,5 +346,6 @@ class Comment(db.Model):
         target.body_html = bleach.linkify(bleach.clean(
             markdown(value, output_format='html'),
             tags=allowed_tags, strip=True))
+
 
 db.event.listen(Comment.body, 'set', Comment.on_changed_body)
