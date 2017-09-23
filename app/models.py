@@ -323,8 +323,8 @@ class Todo(db.Model):
     __tablename__ = 'todos'
     id = db.Column(db.Integer, primary_key=True)
     task = db.Column(db.String(160), nullable=False)
-    order = db.Column(db.Interger, nullable=False)
-    done = db.Column(db.Boolean, default)
+    order = db.Column(db.Integer, nullable=False)
+    done = db.Column(db.Boolean, default=False)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 

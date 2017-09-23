@@ -99,6 +99,6 @@ todo_list.add_url_rule(
         view_func=todos_view,
         methods=['POST', ])
 todo_list.add_url_rule(
-        rule='/todos/<int: todo_id>',
+        rule='/todos/<int:todo_id>',
         view_func=todos_view,
         methods=['GET', 'PATCH', 'PUT', 'DELETE'])
