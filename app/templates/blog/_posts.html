@@ -18,18 +18,18 @@
             </div>
             <div class="post-footer">
                 {% if current_user == post.author %}
-                <a href="{{ url_for('main.edit', id=post.id) }}">
+                <a href="{{ url_for('blog.edit', id=post.id) }}">
                     <span class="label label-primary">编辑</span>
                 </a>
                 {% elif current_user.is_administrator() %}
-                <a href="{{ url_for('main.edit', id=post.id) }}">
+                <a href="{{ url_for('blog.edit', id=post.id) }}">
                     <span class="label label-danger">编辑 [Admin]</span>
                 </a>
                 {% endif %}
-                <a href="{{ url_for('main.post', id=post.id) }}">
-                    <span class="label label-default">永久链接</span>
+                <a href="{{ url_for('blog.post_page', id=post.id) }}">
+                    <span class="label label-default">全文链接</span>
                 </a>
-                <a href="{{ url_for('main.post', id=post.id) }}#comments">
+                <a href="{{ url_for('blog.post_page', id=post.id) }}#comments">
                     <span class="label label-primary">{{ post.comments.count() }} 评论</span>
                 </a>
             </div>

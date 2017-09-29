@@ -26,7 +26,7 @@ class TodosAPI(MethodView):
                     'order': todo.order,
                     'done': todo.done
                     })
-        todos = Todo.query.filter_by(author_id=current_user.id).all()
+        todos = current_user._get_current_object().todos
         if todos:
             return jsonify([{
                     'id': i.id,
@@ -89,16 +89,20 @@ class TodosAPI(MethodView):
 
 
 todos_view = TodosAPI.as_view('todos_view')
+
 todo_list.add_url_rule(
         rule='/todos/',
         defaults={'todo_id': None},
         view_func=todos_view,
-        methods=['GET', ])
+        methods=['GET', ]
+)
 todo_list.add_url_rule(
         rule='/todos/',
         view_func=todos_view,
-        methods=['POST', ])
+        methods=['POST', ]
+)
 todo_list.add_url_rule(
         rule='/todos/<int:todo_id>',
         view_func=todos_view,
-        methods=['GET', 'PATCH', 'PUT', 'DELETE'])
+        methods=['GET', 'PUT', 'DELETE']
+)

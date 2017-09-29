@@ -5,7 +5,7 @@ $(function(){
   // ----------
 
   var Todo = Backbone.Model.extend({
-    urlRoot: '/todo_list/todo',
+    urlRoot: '/todo_list/todos/',
     defaults: function() {  // Default attributes for the todo item.
       return {
         task: "empty todo...",
@@ -108,7 +108,7 @@ $(function(){
     // loading any preexisting todos that might be saved in *localStorage*.
     initialize: function() {  
       this.input = this.$("#new-todo");
-      this.allCheckbox = this.$("#toggle-all")[0];
+      this.allCheckbox = this.$("#todo-toggle-all");
       this.listenTo(Todos, 'add', this.addOne);
       this.listenTo(Todos, 'reset', this.addAll);
       this.listenTo(Todos, 'all', this.render);

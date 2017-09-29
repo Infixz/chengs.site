@@ -5,7 +5,7 @@
 {% block title %}Post | Chengs.site{% endblock %}
 
 {% block page_content %}
-{% include '_posts.html' %}
+{% include 'blog/_posts.html' %}
 <h4 id="comments">Comments</h4>
 {% if current_user.can(Permission.COMMENT) %}
 <div class="comment-form">
@@ -15,7 +15,7 @@
 {% include '_comments.html' %}
 {% if pagination %}
 <div class="pagination">
-    {{ macros.pagination_widget(pagination, '.post', fragment='#comments', id=posts[0].id) }}
+    {{ macros.pagination_widget(pagination, id=posts[0].id, 'blog.post_page', fragment='#comments') }}
 </div>
 {% endif %}
 {% endblock %}
