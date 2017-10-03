@@ -28,11 +28,13 @@ class TodosAPI(MethodView):
                     })
         todos = current_user._get_current_object().todos
         if todos:
-            return jsonify([{
+            return jsonify([
+                {
                     'id': i.id,
                     'task': i.task,
                     'order': i.order,
-                    'done': i.done} for i in todos]), 200
+                    'done': i.done
+                } for i in todos]), 200
         return jsonify({'ERR_MSG': 'NOT FOUND'}), 404
 
     def post(self):

@@ -1,2 +1,45 @@
-<div id="todo-app">
-</div>
+<section class="todoapp">
+  <header class="header">
+    <h1>todos</h1>
+    <input class="new-todo"
+           autofocus autocomplete="off"
+           placeholder="What needs to be done?"
+           v-model="newTodo"
+           @keyup.enter="addTodo">
+  </header>
+  <section class="main" v-show="todos.length" v-cloak>
+    <input class="toggle-all" type="checkbox" v-model="allDone">
+    <ul class="todo-list">
+      <li v-for="todo in filteredTodos"
+        class="todo"
+        v-bind:key="todo.id"
+        v-bind:class="{ completed: todo.completed, editing: todo == editedTodo }">
+        <div class="view">
+          <input class="toggle" type="checkbox" v-model="todo.completed">
+          <label v-on:dblclick="editTodo(todo)" v-text="todo.task"></label>
+          <button class="destroy" v-on:click="removeTodo(todo)"></button>
+        </div>
+        <input class="edit" type="text"
+          v-model="todo.task"
+          v-todo-focus="todo == editedTodo"
+          v-on:blur="doneEdit(todo)"
+          @keyup.enter="doneEdit(todo)"
+          @keyup.esc="cancelEdit(todo)">
+      </li>
+    </ul>
+  </section>
+  <footer class="footer" v-show="todos.length" v-cloak>
+    <span class="todo-count"><strong v-text="remaining"></strong> left</span>
+    <ul class="filters">
+      <li><a href="#/all" v-bind:class="{ selected: visibility == 'all' }">All</a></li>
+      <li><a href="#/active" v-bind:class="{ selected: visibility == 'active' }">Active</a></li>
+      <li><a href="#/completed" v-bind:class="{ selected: visibility == 'completed' }">Completed</a></li>
+    </ul>
+    <button class="clear-completed" v-on:click="removeCompleted" v-show="todos.length > remaining">
+      Clear completed
+    </button>
+  </footer>
+</section>
+<footer class="info">
+  <p>双击修改todo</p>
+</footer>
