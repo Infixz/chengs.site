@@ -23,7 +23,7 @@ ul.posts li.post {
     border-bottom: 1px solid #e0e0e0;
 }
 ul.posts li.post:hover {
-    background-color: #f0f0f0;
+    background-color: rgba(0,0,0,.075);
 }
 div.post-date {
     float: right;
