@@ -64,7 +64,7 @@ def edit(id):
         post.body = form.body.data
         db.session.add(post)
         flash(u'文章已更新')
-        return redirect(url_for('blog.post_page', id=post.id))
+        return redirect(url_for('blog.post_page'+str(post.id)))
     form.body.data = post.body
     return render_template('edit_post.html', form=form)
 
